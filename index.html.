@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FANTASY XI | Football Fantasy</title>
+<style>
+:root {
+  --bg:#07110d;
+  --panel:#101d16;
+  --panel2:#17271e;
+  --green:#b7ff45;
+  --muted:#91a397;
+  --white:#f4fff6;
+  --border:#263b2e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:Arial,sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+header{
+  height:75px;padding:0 6%;
+  display:flex;align-items:center;justify-content:space-between;
+  background:#0b1710;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:10;
+}
+.logo{font-size:25px;font-weight:900;letter-spacing:1px}
+.logo span{color:var(--green)}
+nav{display:flex;gap:23px;align-items:center}
+nav a{color:#b7c9bb;text-decoration:none;font-size:14px}
+nav a:hover{color:var(--green)}
+.container{width:90%;max-width:1250px;margin:auto}
+.hero{
+  padding:65px 0 45px;
+  display:flex;align-items:center;justify-content:space-between;gap:30px;
+}
+.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.05}
+.hero h1 span{color:var(--green)}
+.hero p{color:var(--muted);margin:18px 0;line-height:1.6}
+.btn{
+  background:var(--green);color:#101b0d;border:0;
+  padding:13px 21px;border-radius:8px;font-weight:800;
+}
+.btn:hover{filter:brightness(1.1)}
+.btn.secondary{background:var(--panel2);color:white;border:1px solid var(--border)}
+.hero-card{
+  width:320px;min-height:210px;border-radius:18px;
+  background:linear-gradient(135deg,#294f32,#101d16);
+  border:1px solid #426b3b;padding:25px;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.hero-card .ball{font-size:65px;text-align:center}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:15px;margin:20px 0 45px;
+}
+.stat,.card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:13px;padding:20px;
+}
+.stat strong{font-size:25px;color:var(--green)}
+.stat p{font-size:13px;color:var(--muted);margin-top:6px}
+section{padding:25px 0 40px}
+.section-title{font-size:25px;margin-bottom:18px}
+.muted{color:var(--muted)}
+.leagues{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:12px;
+}
+.league{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:17px 8px;text-align:center;
+  cursor:pointer;transition:.2s;
+}
+.league:hover,.league.active{border-color:var(--green);background:#18291c}
+.league .emoji{font-size:29px;margin-bottom:9px}
+.league small{color:var(--muted)}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.tab{
+  padding:10px 15px;background:var(--panel2);
+  border:1px solid var(--border);color:white;border-radius:8px;
+}
+.tab.active{background:var(--green);color:#101b0d;font-weight:bold}
+.builder{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+select,input{
+  background:#0b1710;color:white;border:1px solid var(--border);
+  padding:11px;border-radius:7px;min-width:0;
+}
+.controls input{flex:1}
+.player-list{display:grid;gap:10px;max-height:510px;overflow-y:auto}
+.player{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--panel2);padding:12px;border-radius:9px;gap:8px;
+}
+.player small{color:var(--muted);display:block;margin-top:4px}
+.player button{padding:8px 12px;border:0;border-radius:7px;background:var(--green);font-weight:bold}
+.pitch{
+  background:linear-gradient(135deg,#245c35,#174529);
+  border:3px solid #5e9a63;border-radius:15px;
+  min-height:400px;padding:20px 10px;position:relative;
+  display:flex;flex-direction:column;justify-content:space-around;
+}
+.pitch:before{
+  content:"";position:absolute;inset:50% 0 auto;
+  border-top:1px solid #ffffff55;
+}
+.pitch-row{display:flex;justify-content:space-around;gap:5px;position:relative;z-index:1}
+.slot{
+  width:76px;min-height:72px;border-radius:9px;
+  background:#ffffff20;border:1px dashed #ffffff99;
+  text-align:center;padding:8px 3px;font-size:11px;
+  cursor:pointer;overflow-wrap:anywhere;
+}
+.slot span{display:block;font-size:20px;margin-bottom:5px}
+.slot.filled{background:#b7ff45;color:#12200d;border:0;font-weight:bold}
+.team-info{display:flex;justify-content:space-between;gap:10px;margin-bottom:15px}
+.team-info strong{color:var(--green)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:13px;text-align:left;border-bottom:1px solid var(--border)}
+.table th{color:var(--muted);font-size:13px}
+footer{text-align:center;padding:35px;color:var(--muted);border-top:1px solid var(--border);margin-top:40px}
+.hidden{display:none!important}
+.notice{color:var(--green);font-size:13px;margin-top:12px;min-height:18px}
+@media(max-width:800px){
+  nav{gap:10px}nav a{font-size:12px}
+  .hero{flex-direction:column;align-items:flex-start}
+  .hero-card{width:100%}
+  .builder{grid-template-columns:1fr}
+  .leagues{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:500px){
+  header{padding:0 4%}
+  .logo{font-size:19px}
+  nav a:nth-child(n+3){display:none}
+  .container{width:93%}
+  .stats{gap:7px}
+  .stat{padding:12px}
+  .stat strong{font-size:19px}
+  .slot{width:62px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">FANTASY<span>XI.</span></div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#leagues">Leagues</a>
+    <a href="#create">Create Team</a>
+    <a href="#leaderboard">Leaderboard</a>
+  </nav>
+</header>
+
+<main class="container">
+
+<div class="hero" id="home">
+  <div>
+    <p style="color:var(--green);font-weight:bold">THE ULTIMATE FOOTBALL FANTASY EXPERIENCE</p>
+    <h1>BUILD YOUR<br><span>LEGENDARY XI.</span></h1>
+    <p>Choose your stars. Build your dream team.<br>Compete and climb the fantasy leaderboard.</p>
+    <button class="btn" onclick="document.querySelector('#create').scrollIntoView({behavior:'smooth'})">BUILD YOUR TEAM →</button>
+  </div>
+  <div class="hero-card">
+    <div><small>YOUR NEXT CHALLENGE</small><h2>THE WORLD'S BEST XI</h2></div>
+    <div class="ball">⚽</div>
+    <strong style="color:var(--green)">YOUR GAME. YOUR RULES.</strong>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><strong>5</strong><p>Major Leagues</p></div>
+  <div class="stat"><strong>100M</strong><p>Starting Budget</p></div>
+  <div class="stat"><strong>15</strong><p>Squad Players</p></div>
+</div>
+
+<section id="leagues">
+  <h2 class="section-title">Explore Leagues</h2>
+  <p class="muted">Choose your favourite competition.</p>
+  <div class="leagues" id="leagueCards"></div>
+</section>
+
+<section id="create">
+  <h2 class="section-title">Create Your Fantasy Team</h2>
+  <p class="muted">Build a squad of 15 players with a 100M virtual budget.</p>
+  <div class="tabs">
+    <button class="tab active" id="globalTab" onclick="setMode('Global')">Global Fantasy</button>
+    <button class="tab" id="leagueTab" onclick="setMode('League')">League Fantasy</button>
+  </div>
+  <div id="leagueSelectWrap" class="hidden">
+    <select id="teamLeague" onchange="renderPlayers()">
+      <option value="Premier League">Premier League</option>
+      <option value="La Liga">La Liga</option>
+      <option value="Serie A">Serie A</option>
+      <option value="Bundesliga">Bundesliga</option>
+      <option value="Ligue 1">Ligue 1</option>
+    </select>
+  </div>
+
+  <div class="team-info">
+    <div>Budget: <strong id="budget">100.0M</strong></div>
+    <div>Players: <strong id="count">0 / 15</strong></div>
+  </div>
+
+  <div class="builder">
+    <div class="card">
+      <h3>Player Market</h3>
+      <div class="controls">
+        <input id="search" placeholder="Search players..." oninput="renderPlayers()">
+        <select id="positionFilter" onchange="renderPlayers()">
+          <option value="All">All Positions</option>
+          <option value="GK">Goalkeepers</option>
+          <option value="DEF">Defenders</option>
+          <option value="MID">Midfielders</option>
+          <option value="FWD">Forwards</option>
+        </select>
+      </div>
+      <div class="player-list" id="playerList"></div>
+    </div>
+
+    <div class="card">
+      <h3>Your Formation</h3>
+      <div class="controls">
+        <select id="formation" onchange="renderPitch()">
+          <option value="4-3-3">4-3-3</option>
+          <option value="4-4-2">4-4-2</option>
+          <option value="3-5-2">3-5-2</option>
+          <option value="3-4-3">3-4-3</option>
+          <option value="4-2-3-1">4-2-3-1</option>
+        </select>
+      </div>
+      <div class="pitch" id="pitch"></div>
+      <div class="actions">
+        <button class="btn" onclick="saveTeam()">SAVE TEAM</button>
+        <button class="btn secondary" onclick="resetTeam()">RESET</button>
+      </div>
+      <p class="notice" id="message"></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="section-title">Your Saved Teams</h2>
+  <div class="card" id="savedTeams">No saved teams yet.</div>
+</section>
+
+<section id="leaderboard">
+  <h2 class="section-title">Fantasy Leaderboard</h2>
+  <div class="card">
+    <table class="table">
+      <thead><tr><th>Rank</th><th>Manager</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Goal Machine</td><td>1,240</td></tr>
+        <tr><td>2</td><td>Football King</td><td>1,180</td></tr>
+        <tr><td>3</td><td>Legend XI</td><td>1,125</td></tr>
+        <tr><td>4</td><td>You</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <p class="notice">Demo leaderboard – sample points, not live rankings.</p>
+  </div>
+</section>
+
+</main>
+<footer>
+  <div class="logo">FANTASY<span>XI.</span></div>
+  <p>Build your dream. Rule the game.</p>
+  <p style="font-size:12px;margin-top:12px">Unofficial fan-made fantasy project. Not affiliated with any football league.</p>
+</footer>
+
+<script>
+const leagues=[
+ ["Premier League","England","🏴"],
+ ["La Liga","Spain","🇪🇸"],
+ ["Serie A","Italy","🇮🇹"],
+ ["Bundesliga","Germany","🇩🇪"],
+ ["Ligue 1","France","🇫🇷"]
+];
+
+const players=[
+ ["Erling Haaland","Manchester City","Premier League","FWD",15],
+ ["Mohamed Salah","Liverpool","Premier League","FWD",14],
+ ["Bukayo Saka","Arsenal","Premier League","MID",10],
+ ["Bruno Fernandes","Manchester United","Premier League","MID",9],
+ ["Virgil van Dijk","Liverpool","Premier League","DEF",7],
+ ["William Saliba","Arsenal","Premier League","DEF",6],
+ ["Alisson","Liverpool","Premier League","GK",5],
+ ["Cole Palmer","Chelsea","Premier League","MID",11],
+ ["Declan Rice","Arsenal","Premier League","MID",8],
+ ["Alexander Isak","Newcastle United","Premier League","FWD",10],
+ ["Lamine Yamal","Barcelona","La Liga","FWD",12],
+ ["Kylian Mbappe","Real Madrid","La Liga","FWD",15],
+ ["Jude Bellingham","Real Madrid","La Liga","MID",12],
+ ["Pedri","Barcelona","La Liga","MID",10],
+ ["Vinicius Junior","Real Madrid","La Liga","FWD",14],
+ ["Raphinha","Barcelona","La Liga","MID",10],
+ ["Thibaut Courtois","Real Madrid","La Liga","GK",5],
+ ["Antonio Rudiger","Real Madrid","La Liga","DEF",6],
+ ["Lautaro Martinez","Inter","Serie A","FWD",12],
+ ["Rafael Leao","AC Milan","Serie A","FWD",10],
+ ["Alessandro Bastoni","Inter","Serie A","DEF",6],
+ ["Nicolo Barella","Inter","Serie A","MID",9],
+ ["Mike Maignan","AC Milan","Serie A","GK",5],
+ ["Paulo Dybala","Roma","Serie A","MID",9],
+ ["Harry Kane","Bayern Munich","Bundesliga","FWD",14],
+ ["Jamal Musiala","Bayern Munich","Bundesliga","MID",11],
+ ["Florian Wirtz","Bayer Leverkusen","Bundesliga","MID",12],
+ ["Joshua Kimmich","Bayern Munich","Bundesliga","MID",8],
+ ["Gregor Kobel","Borussia Dortmund","Bundesliga","GK",5],
+ ["Ousmane Dembele","PSG","Ligue 1","FWD",11],
+ ["Achraf Hakimi","PSG","Ligue 1","DEF",7],
+ ["Vitinha","PSG","Ligue 1","MID",9],
+ ["Bradley Barcola","PSG","Ligue 1","FWD",9],
+ ["Lucas Chevalier","PSG","Ligue 1","GK",5],
+ ["Marquinhos","PSG","Ligue 1","DEF",6]
+].map((p,i)=>({id:i,name:p[0],club:p[1],league:p[2],pos:p[3],price:p[4]}));
+
+let mode="Global";
+let selected=[];
+let saved=[];
+let captain=null;
+let vice=null;
+
+function renderLeagues(){
+ document.getElementById("leagueCards").innerHTML=leagues.map(l=>`
+ <div class="league" onclick="chooseLeague('${l[0]}')">
+ <div class="emoji">${l[2]}</div><b>${l[0]}</b><br><small>${l[1]}</small></div>`).join("");
+}
+function chooseLeague(name){
+ setMode("League");
+ document.getElementById("teamLeague").value=name;
+ renderPlayers();
+ document.getElementById("create").scrollIntoView({behavior:"smooth"});
+}
+function setMode(m){
+ mode=m;selected=[];captain=null;vice=null;
+ document.getElementById("globalTab").classList.toggle("active",m==="Global");
+ document.getElementById("leagueTab").classList.toggle("active",m==="League");
+ document.getElementById("leagueSelectWrap").classList.toggle("hidden",m==="Global");
+ renderPlayers();renderPitch();updateInfo();
+}
+function budgetUsed(){
+ return selected.reduce((sum,p)=>sum+p.price,0);
+}
+function renderPlayers(){
+ const search=document.getElementById("search").value.toLowerCase();
+ const pos=document.getElementById("positionFilter").value;
+ const league=document.getElementById("teamLeague").value;
+ const list=players.filter(p=>
+ (mode==="Global"||p.league===league)&&
+ (pos==="All"||p.pos===pos)&&
+ (p.name.toLowerCase().includes(search)||p.club.toLowerCase().includes(search))
+ );
+ document.getElementById("playerList").innerHTML=list.map(p=>{
+ const added=selected.some(x=>x.id===p.id);
+ return `<div class="player">
+ <div><b>${p.name}</b><small>${p.club} · ${p.league} · ${p.pos}</small></div>
+ <div><b>${p.price}M</b><br><button onclick="addPlayer(${p.id})" ${added?"disabled":""}>${added?"ADDED":"ADD +"}</button></div>
+ </div>`;
+ }).join("")||'<p class="muted">No players found.</p>';
+}
+function addPlayer(id){
+ const p=players.find(x=>x.id===id);
+ if(selected.length>=15)return alert("Your squad is full (15 players).");
+ if(selected.some(x=>x.id===id))return;
+ if(budgetUsed()+p.price>100)return alert("Not enough budget!");
+ if(selected.filter(x=>x.club===p.club).length>=3)return alert("Maximum 3 players per club!");
+ if(selected.filter(x=>x.pos===p.pos).length >= ({GK:2,DEF:5,MID:5,FWD:3}[p.pos]))return alert("Position limit reached!");
+ selected.push(p);renderPlayers();renderPitch();updateInfo();
+}
+function removePlayer(id){
+ selected=selected.filter(p=>p.id!==id);
+ if(captain===id)captain=null;
+ if(vice===id)vice=null;
+ renderPlayers();renderPitch();updateInfo();
+}
+function updateInfo(){
+ document.getElementById("budget").textContent=(100-budgetUsed()).toFixed(1)+"M";
+ document.getElementById("count").textContent=selected.length+" / 15";
+}
+function renderPitch(){
+ const f=document.getElementById("formation").value.split("-").map(Number);
+ const rows=[["GK"],...f.map((n,i)=>Array(n).fill(["DEF","MID","FWD"][i]||"MID"))];
+ const starters=selected.slice(0,11);
+ let index=0;
+ document.getElementById("pitch").innerHTML=rows.map(row=>`
+ <div class="pitch-row">${row.map(()=> {
+ const p=starters[index++];
+ if(!p)return `<div class="slot" onclick="showMessage('Add players from the market')"><span>＋</span>Empty</div>`;
+ return `<div class="slot filled" onclick="removePlayer(${p.id})"><span>⚽</span>${p.name.split(" ").slice(-1)[0]}<br>${p.pos}</div>`;
+ }).join("")}</div>`).join("");
+ if(starters.length>0){
+ document.getElementById("pitch").innerHTML+=`<p style="text-align:center;font-size:11px;color:white">Tap a player to remove them. First 11 selected are shown.</p>`;
+ }
+}
+function showMessage(msg){document.getElementById("message").textContent=msg;}
+function saveTeam(){
+ if(selected.length!==15)return alert("Select exactly 15 players before saving.");
+ const name=prompt("Enter your team name:","My Fantasy XI");
+ if(!name)return;
+ saved.push({name,mode,players:[...selected],captain,vice});
+ localStorage.setItem("fantasyXI",JSON.stringify(saved));
+ renderSaved();
+ showMessage("Team saved successfully!");
+}
+function resetTeam(){
+ if(!confirm("Reset your current team?"))return;
+ selected=[];captain=null;vice=null;
+ renderPlayers();renderPitch();updateInfo();showMessage("Team reset.");
+}
+function renderSaved(){
+ const el=document.getElementById("savedTeams");
+ if(!saved.length){el.textContent="No saved teams yet.";return;}
+ el.innerHTML=saved.map((t,i)=>`
+ <div class="player" style="margin-bottom:10px">
+ <div><b>${t.name}</b><small>${t.mode} Fantasy · ${t.players.length} players</small></div>
+ <button onclick="loadTeam(${i})">LOAD</button>
+ </div>`).join("");
+}
+function loadTeam(i){
+ const t=saved[i];selected=[...t.players];mode=t.mode;
+ captain=t.captain;vice=t.vice;
+ document.getElementById("teamLeague").value="Premier League";
+ document.getElementById("globalTab").classList.toggle("active",mode==="Global");
+ document.getElementById("leagueTab").classList.toggle("active",mode==="League");
+ document.getElementById("leagueSelectWrap").classList.toggle("hidden",mode==="Global");
+ renderPlayers();renderPitch();updateInfo();
+ document.getElementById("create").scrollIntoView({behavior:"smooth"});
+}
+function loadData(){
+ try{saved=JSON.parse(localStorage.getItem("fantasyXI"))||[];}catch(e){saved=[];}
+ renderLeagues();renderPlayers();renderPitch();updateInfo();renderSaved();
+}
+loadData();
+</script>
+</body>
+</html>
